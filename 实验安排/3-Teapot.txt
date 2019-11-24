@@ -1,0 +1,63 @@
+#include <windows.h>
+#include <GL/glaux.h>
+#include <GL/glut.h>
+
+GLfloat sgenparams[]={1.0, 1.0, 1.0, 0.0};
+
+void Init(void)
+{
+	glClear (GL_COLOR_BUFFER_BIT);
+	glShadeModel(GL_FLAT);
+
+	AUX_RGBImageRec* TextureImage[1];
+	TextureImage[0] = auxDIBImageLoad(L"2.bmp");
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); //GL_REPEAT, GL_CLAMP
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
+
+    glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_TEXTURE_GEN_S);
+	//glEnable(GL_TEXTURE_GEN_T);
+	
+	glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_DEPTH_TEST);	
+    glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CW);
+    glEnable(GL_AUTO_NORMAL);
+    glEnable(GL_NORMALIZE);
+    glMaterialf(GL_FRONT, GL_SHININESS, 64.0);
+}
+
+void teapot(void)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+    glRotatef(30.0,1.0,0.0,0.0);  //ÑØxÖáÐý×ª30¶È
+	
+    auxSolidTeapot(0.5);
+    glPopMatrix();
+    glFlush();
+}
+
+void main (int argc, char** argv)
+{
+	glutInit (&argc, argv);
+	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+	glutInitWindowPosition (100, 100);
+	glutInitWindowSize (500, 500);
+	glutCreateWindow ("Orz");
+	glClearColor (0.0, 0.0, 0.0, 0.0);
+	
+	Init();
+	glutDisplayFunc (teapot);
+	
+	glutMainLoop ( );
+}
